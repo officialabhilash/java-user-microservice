@@ -15,20 +15,20 @@ public final class UserServiceOuterClass {
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_example_demo_users_grpc_generated_GetUserRequest_descriptor;
+    internal_static_com_example_user_users_grpc_generated_GetUserRequest_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_example_demo_users_grpc_generated_GetUserRequest_fieldAccessorTable;
+      internal_static_com_example_user_users_grpc_generated_GetUserRequest_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_example_demo_users_grpc_generated_CreateUserRequest_descriptor;
+    internal_static_com_example_user_users_grpc_generated_CreateUserRequest_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_example_demo_users_grpc_generated_CreateUserRequest_fieldAccessorTable;
+      internal_static_com_example_user_users_grpc_generated_CreateUserRequest_fieldAccessorTable;
   static final com.google.protobuf.Descriptors.Descriptor
-    internal_static_com_example_demo_users_grpc_generated_UserResponse_descriptor;
+    internal_static_com_example_user_users_grpc_generated_UserResponse_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
-      internal_static_com_example_demo_users_grpc_generated_UserResponse_fieldAccessorTable;
+      internal_static_com_example_user_users_grpc_generated_UserResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -38,41 +38,41 @@ public final class UserServiceOuterClass {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\022user_service.proto\022%com.example.demo.u" +
+      "\n\022user_service.proto\022%com.example.user.u" +
       "sers.grpc.generated\"!\n\016GetUserRequest\022\017\n" +
       "\007user_id\030\001 \001(\t\"0\n\021CreateUserRequest\022\014\n\004n" +
       "ame\030\001 \001(\t\022\r\n\005email\030\002 \001(\t\"<\n\014UserResponse" +
       "\022\017\n\007user_id\030\001 \001(\t\022\014\n\004name\030\002 \001(\t\022\r\n\005email" +
       "\030\003 \001(\t2\201\002\n\013UserService\022u\n\007GetUser\0225.com." +
-      "example.demo.users.grpc.generated.GetUse" +
-      "rRequest\0323.com.example.demo.users.grpc.g" +
+      "example.user.users.grpc.generated.GetUse" +
+      "rRequest\0323.com.example.user.users.grpc.g" +
       "enerated.UserResponse\022{\n\nCreateUser\0228.co" +
-      "m.example.demo.users.grpc.generated.Crea" +
-      "teUserRequest\0323.com.example.demo.users.g" +
+      "m.example.user.users.grpc.generated.Crea" +
+      "teUserRequest\0323.com.example.user.users.g" +
       "rpc.generated.UserResponseB)\n%com.exampl" +
-      "e.demo.users.grpc.generatedP\001b\006proto3"
+      "e.user.users.grpc.generatedP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         });
-    internal_static_com_example_demo_users_grpc_generated_GetUserRequest_descriptor =
+    internal_static_com_example_user_users_grpc_generated_GetUserRequest_descriptor =
       getDescriptor().getMessageTypes().get(0);
-    internal_static_com_example_demo_users_grpc_generated_GetUserRequest_fieldAccessorTable = new
+    internal_static_com_example_user_users_grpc_generated_GetUserRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_example_demo_users_grpc_generated_GetUserRequest_descriptor,
+        internal_static_com_example_user_users_grpc_generated_GetUserRequest_descriptor,
         new java.lang.String[] { "UserId", });
-    internal_static_com_example_demo_users_grpc_generated_CreateUserRequest_descriptor =
+    internal_static_com_example_user_users_grpc_generated_CreateUserRequest_descriptor =
       getDescriptor().getMessageTypes().get(1);
-    internal_static_com_example_demo_users_grpc_generated_CreateUserRequest_fieldAccessorTable = new
+    internal_static_com_example_user_users_grpc_generated_CreateUserRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_example_demo_users_grpc_generated_CreateUserRequest_descriptor,
+        internal_static_com_example_user_users_grpc_generated_CreateUserRequest_descriptor,
         new java.lang.String[] { "Name", "Email", });
-    internal_static_com_example_demo_users_grpc_generated_UserResponse_descriptor =
+    internal_static_com_example_user_users_grpc_generated_UserResponse_descriptor =
       getDescriptor().getMessageTypes().get(2);
-    internal_static_com_example_demo_users_grpc_generated_UserResponse_fieldAccessorTable = new
+    internal_static_com_example_user_users_grpc_generated_UserResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_com_example_demo_users_grpc_generated_UserResponse_descriptor,
+        internal_static_com_example_user_users_grpc_generated_UserResponse_descriptor,
         new java.lang.String[] { "UserId", "Name", "Email", });
   }
 

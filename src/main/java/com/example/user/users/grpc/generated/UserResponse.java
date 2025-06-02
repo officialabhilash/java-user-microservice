@@ -4,11 +4,11 @@
 package com.example.user.users.grpc.generated;
 
 /**
- * Protobuf type {@code com.example.demo.users.grpc.generated.UserResponse}
+ * Protobuf type {@code com.example.user.users.grpc.generated.UserResponse}
  */
 public final class UserResponse extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:com.example.demo.users.grpc.generated.UserResponse)
+    // @@protoc_insertion_point(message_implements:com.example.user.users.grpc.generated.UserResponse)
     UserResponseOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use UserResponse.newBuilder() to construct.
@@ -35,13 +35,13 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return com.example.user.users.grpc.generated.UserServiceOuterClass.internal_static_com_example_demo_users_grpc_generated_UserResponse_descriptor;
+    return com.example.user.users.grpc.generated.UserServiceOuterClass.internal_static_com_example_user_users_grpc_generated_UserResponse_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return com.example.user.users.grpc.generated.UserServiceOuterClass.internal_static_com_example_demo_users_grpc_generated_UserResponse_fieldAccessorTable
+    return com.example.user.users.grpc.generated.UserServiceOuterClass.internal_static_com_example_user_users_grpc_generated_UserResponse_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.example.user.users.grpc.generated.UserResponse.class, com.example.user.users.grpc.generated.UserResponse.Builder.class);
   }
@@ -338,26 +338,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code com.example.demo.users.grpc.generated.UserResponse}
+   * Protobuf type {@code com.example.user.users.grpc.generated.UserResponse}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:com.example.demo.users.grpc.generated.UserResponse)
+      // @@protoc_insertion_point(builder_implements:com.example.user.users.grpc.generated.UserResponse)
       com.example.user.users.grpc.generated.UserResponseOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.example.user.users.grpc.generated.UserServiceOuterClass.internal_static_com_example_demo_users_grpc_generated_UserResponse_descriptor;
+      return com.example.user.users.grpc.generated.UserServiceOuterClass.internal_static_com_example_user_users_grpc_generated_UserResponse_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.example.user.users.grpc.generated.UserServiceOuterClass.internal_static_com_example_demo_users_grpc_generated_UserResponse_fieldAccessorTable
+      return com.example.user.users.grpc.generated.UserServiceOuterClass.internal_static_com_example_user_users_grpc_generated_UserResponse_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.example.user.users.grpc.generated.UserResponse.class, com.example.user.users.grpc.generated.UserResponse.Builder.class);
     }
 
-    // Construct using com.example.demo.users.grpc.generated.UserResponse.newBuilder()
+    // Construct using com.example.user.users.grpc.generated.UserResponse.newBuilder()
     private Builder() {
 
     }
@@ -380,7 +380,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return com.example.user.users.grpc.generated.UserServiceOuterClass.internal_static_com_example_demo_users_grpc_generated_UserResponse_descriptor;
+      return com.example.user.users.grpc.generated.UserServiceOuterClass.internal_static_com_example_user_users_grpc_generated_UserResponse_descriptor;
     }
 
     @java.lang.Override
@@ -763,10 +763,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:com.example.demo.users.grpc.generated.UserResponse)
+    // @@protoc_insertion_point(builder_scope:com.example.user.users.grpc.generated.UserResponse)
   }
 
-  // @@protoc_insertion_point(class_scope:com.example.demo.users.grpc.generated.UserResponse)
+  // @@protoc_insertion_point(class_scope:com.example.user.users.grpc.generated.UserResponse)
   private static final com.example.user.users.grpc.generated.UserResponse DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new com.example.user.users.grpc.generated.UserResponse();

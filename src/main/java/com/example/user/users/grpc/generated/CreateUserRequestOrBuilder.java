@@ -4,7 +4,7 @@
 package com.example.user.users.grpc.generated;
 
 public interface CreateUserRequestOrBuilder extends
-    // @@protoc_insertion_point(interface_extends:com.example.demo.users.grpc.generated.CreateUserRequest)
+    // @@protoc_insertion_point(interface_extends:com.example.user.users.grpc.generated.CreateUserRequest)
     com.google.protobuf.MessageOrBuilder {
 
   /**

@@ -4,11 +4,11 @@
 package com.example.user.users.grpc.generated;
 
 /**
- * Protobuf type {@code com.example.demo.users.grpc.generated.CreateUserRequest}
+ * Protobuf type {@code com.example.user.users.grpc.generated.CreateUserRequest}
  */
 public final class CreateUserRequest extends
     com.google.protobuf.GeneratedMessageV3 implements
-    // @@protoc_insertion_point(message_implements:com.example.demo.users.grpc.generated.CreateUserRequest)
+    // @@protoc_insertion_point(message_implements:com.example.user.users.grpc.generated.CreateUserRequest)
     CreateUserRequestOrBuilder {
 private static final long serialVersionUID = 0L;
   // Use CreateUserRequest.newBuilder() to construct.
@@ -34,13 +34,13 @@ private static final long serialVersionUID = 0L;
   }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
-    return com.example.user.users.grpc.generated.UserServiceOuterClass.internal_static_com_example_demo_users_grpc_generated_CreateUserRequest_descriptor;
+    return com.example.user.users.grpc.generated.UserServiceOuterClass.internal_static_com_example_user_users_grpc_generated_CreateUserRequest_descriptor;
   }
 
   @java.lang.Override
   protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internalGetFieldAccessorTable() {
-    return com.example.user.users.grpc.generated.UserServiceOuterClass.internal_static_com_example_demo_users_grpc_generated_CreateUserRequest_fieldAccessorTable
+    return com.example.user.users.grpc.generated.UserServiceOuterClass.internal_static_com_example_user_users_grpc_generated_CreateUserRequest_fieldAccessorTable
         .ensureFieldAccessorsInitialized(
             com.example.user.users.grpc.generated.CreateUserRequest.class, com.example.user.users.grpc.generated.CreateUserRequest.Builder.class);
   }
@@ -288,26 +288,26 @@ private static final long serialVersionUID = 0L;
     return builder;
   }
   /**
-   * Protobuf type {@code com.example.demo.users.grpc.generated.CreateUserRequest}
+   * Protobuf type {@code com.example.user.users.grpc.generated.CreateUserRequest}
    */
   public static final class Builder extends
       com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-      // @@protoc_insertion_point(builder_implements:com.example.demo.users.grpc.generated.CreateUserRequest)
+      // @@protoc_insertion_point(builder_implements:com.example.user.users.grpc.generated.CreateUserRequest)
       com.example.user.users.grpc.generated.CreateUserRequestOrBuilder {
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.example.user.users.grpc.generated.UserServiceOuterClass.internal_static_com_example_demo_users_grpc_generated_CreateUserRequest_descriptor;
+      return com.example.user.users.grpc.generated.UserServiceOuterClass.internal_static_com_example_user_users_grpc_generated_CreateUserRequest_descriptor;
     }
 
     @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.example.user.users.grpc.generated.UserServiceOuterClass.internal_static_com_example_demo_users_grpc_generated_CreateUserRequest_fieldAccessorTable
+      return com.example.user.users.grpc.generated.UserServiceOuterClass.internal_static_com_example_user_users_grpc_generated_CreateUserRequest_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.example.user.users.grpc.generated.CreateUserRequest.class, com.example.user.users.grpc.generated.CreateUserRequest.Builder.class);
     }
 
-    // Construct using com.example.demo.users.grpc.generated.CreateUserRequest.newBuilder()
+    // Construct using com.example.user.users.grpc.generated.CreateUserRequest.newBuilder()
     private Builder() {
 
     }
@@ -329,7 +329,7 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public com.google.protobuf.Descriptors.Descriptor
         getDescriptorForType() {
-      return com.example.user.users.grpc.generated.UserServiceOuterClass.internal_static_com_example_demo_users_grpc_generated_CreateUserRequest_descriptor;
+      return com.example.user.users.grpc.generated.UserServiceOuterClass.internal_static_com_example_user_users_grpc_generated_CreateUserRequest_descriptor;
     }
 
     @java.lang.Override
@@ -627,10 +627,10 @@ private static final long serialVersionUID = 0L;
     }
 
 
-    // @@protoc_insertion_point(builder_scope:com.example.demo.users.grpc.generated.CreateUserRequest)
+    // @@protoc_insertion_point(builder_scope:com.example.user.users.grpc.generated.CreateUserRequest)
   }
 
-  // @@protoc_insertion_point(class_scope:com.example.demo.users.grpc.generated.CreateUserRequest)
+  // @@protoc_insertion_point(class_scope:com.example.user.users.grpc.generated.CreateUserRequest)
   private static final com.example.user.users.grpc.generated.CreateUserRequest DEFAULT_INSTANCE;
   static {
     DEFAULT_INSTANCE = new com.example.user.users.grpc.generated.CreateUserRequest();

@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-package com.example.demo.orders.grpc.generated;
+package com.example.user.users.grpc.generated;
 
 option java_multiple_files = true;
-option java_package = "com.example.demo.orders.grpc.generated";
+option java_package = "com.example.user.users.grpc.generated";
 
 service OrderService {
   rpc GetOrder (GetOrderRequest) returns (OrderResponse);

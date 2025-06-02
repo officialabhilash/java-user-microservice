@@ -12,7 +12,7 @@ public final class UserServiceGrpc {
 
   private UserServiceGrpc() {}
 
-  public static final String SERVICE_NAME = "com.example.demo.users.grpc.generated.UserService";
+  public static final String SERVICE_NAME = "com.example.user.users.grpc.generated.UserService";
 
   // Static method descriptors that strictly reflect the proto.
   private static volatile io.grpc.MethodDescriptor<com.example.user.users.grpc.generated.GetUserRequest,
