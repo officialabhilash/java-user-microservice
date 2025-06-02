@@ -27,7 +27,7 @@
 		<url/>
 	</scm>
 	<properties>
-		<java.version>23</java.version>
+		<java.version>17</java.version>
 		<grpc.version>1.72.0</grpc.version>
 	</properties>
 	<dependencies>

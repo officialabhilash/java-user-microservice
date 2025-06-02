@@ -1,5 +1,6 @@
 package com.example.user.users.entities;
 
+import com.example.user.journal.entities.JournalEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -48,6 +50,7 @@ public class UserEntity {
     @Schema(description = "Date when the user was created")
     private LocalDateTime date;
 
-
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<JournalEntity> journals;
 }
 
