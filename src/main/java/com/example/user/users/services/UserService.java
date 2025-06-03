@@ -20,6 +20,7 @@ public class UserService {
     private UserRepository userRepository;
 
     // if the PasswordEncoder is not linted, don't worry, it is a bean.
+    @Autowired
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -46,6 +47,8 @@ public class UserService {
         }
         UserEntity user = UserEntity.builder().
                 email(userDto.getEmail()).
+                firstName(userDto.getFirstName()).
+                lastName(userDto.getLastName()).
                 username(userDto.getUsername()).
                 date(LocalDateTime.now()).
                 password(passwordEncoder.encode(userDto.getPassword())).
@@ -62,6 +65,7 @@ public class UserService {
                 lastName(x.getLastName()).
                 email(x.getEmail()).
                 date(x.getDate()).
+                password(x.getPassword()).
                 build()).collect(Collectors.toList());
     }
 

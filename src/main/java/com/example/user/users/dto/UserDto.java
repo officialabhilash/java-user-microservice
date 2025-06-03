@@ -1,10 +1,14 @@
 package com.example.user.users.dto;
 
+import com.example.user.users.serializers.UserDtoSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.example.user.users.serializers.UserDtoDeserializer;
 
 import java.time.LocalDateTime;
 
@@ -12,6 +16,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Data
 @Builder
+@JsonSerialize(using = UserDtoSerializer.class)
+@JsonDeserialize(using = UserDtoDeserializer.class)
 public class UserDto {
 
     @Nullable
