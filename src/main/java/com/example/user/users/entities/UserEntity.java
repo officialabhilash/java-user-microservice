@@ -1,5 +1,6 @@
 package com.example.user.users.entities;
 
+import com.example.user.groups.entities.GroupEntity;
 import com.example.user.journal.entities.JournalEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -12,6 +13,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -60,7 +62,10 @@ public class UserEntity implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<JournalEntity> journals;
 
-    @Schema(description = "User role.", example = "STUDENT")
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<GroupEntity> groups = new ArrayList<>();
+
+    @Schema(description = "User role.", example = "s")
     private String role;
 
     @Override
