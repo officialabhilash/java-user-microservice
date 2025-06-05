@@ -7,8 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 @NoArgsConstructor
@@ -23,7 +27,7 @@ import java.util.List;
                 @Index(name = "idx_username", columnList = "username")
         }
 )
-public class UserEntity {
+public class UserEntity implements UserDetails {
 
     @Schema(description = "Unique identifier of the user", example = "507f1f77bcf86cd799439011")
     @Id
@@ -37,6 +41,9 @@ public class UserEntity {
 
     @Schema(description = "First name of the user", example = "John")
     private String firstName;
+
+    @Schema(description = "Is user enabled", example = "true")
+    private Boolean isEnabled = false;
 
     @Schema(description = "Last name of the user", example = "Doe")
     private String lastName;
@@ -52,5 +59,33 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<JournalEntity> journals;
+
+    @Schema(description = "User role.", example = "STUDENT")
+    private String role;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isEnabled;
+    }
 }
 

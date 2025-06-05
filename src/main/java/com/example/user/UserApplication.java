@@ -6,7 +6,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.util.HashMap;
 import java.util.Map;
 
-@SpringBootApplication
+@SpringBootApplication(
+		exclude = {
+				net.devh.boot.grpc.server.autoconfigure.GrpcServerSecurityAutoConfiguration.class
+		}
+)
+//@SpringBootApplication
 public class UserApplication {
 
 	public static void main(String[] args) {
