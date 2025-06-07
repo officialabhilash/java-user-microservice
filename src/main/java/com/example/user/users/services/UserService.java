@@ -75,7 +75,7 @@ public class UserService implements UserDetailsService {
 
     public UserDto getUserById(Long id) {
 
-        UserEntity userEntity = userRepository.findById(id.toString()).orElseThrow(EntityNotFoundException::new);
+        UserEntity userEntity = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         return UserDto.builder().
                 username(userEntity.getUsername()).
                 firstName(userEntity.getFirstName()).
@@ -87,7 +87,7 @@ public class UserService implements UserDetailsService {
     }
 
     public UserDto updateUserById(Long id, UserDto userData) {
-        UserEntity old = userRepository.findById(id.toString()).orElseThrow(EntityNotFoundException::new);
+        UserEntity old = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         // username and date can't change
         old.setUsername(!userData.getUsername().isBlank() ? userData.getUsername() : old.getUsername());
         old.setDate(userData.getDate() != null && !userData.getDate().toString().isBlank() ? userData.getDate() : LocalDateTime.now());
@@ -105,9 +105,9 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean deleteUserById(Long id) {
-        boolean existsById = userRepository.existsById(id.toString());
+        boolean existsById = userRepository.existsById(id);
         if (existsById) {
-            userRepository.deleteById(id.toString());
+            userRepository.deleteById(id);
             return true;
         }
         return false;
@@ -122,5 +122,22 @@ public class UserService implements UserDetailsService {
                 .password(userEntity.getPassword())
                 .roles(new String[] {userEntity.getRole()})
                 .build();
+    }
+
+    /**
+     * Sets a new password for the user with the given id, using the password from the provided UserDto.
+     * @param userDto UserDto containing the new password (in plain text)
+     * @param id The id of the user whose password is to be changed
+     * @return true if password was updated, false if user not found
+     */
+    public boolean setPasswordForUser(UserDto userDto, Long id) {
+        UserEntity user = userRepository.findById(id).orElseThrow();
+        if (userDto.getPassword() == null || userDto.getPassword().isBlank()) {
+            throw new ValidationException("Password cannot be empty");
+        }
+        System.out.println(passwordEncoder.encode(userDto.getPassword()));
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        userRepository.save(user);
+        return true;
     }
 }

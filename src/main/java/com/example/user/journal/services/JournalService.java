@@ -22,13 +22,15 @@ public class JournalService {
     private UserRepository userRepository;
 
     public void saveJournal(JournalDto journal) throws ChangeSetPersister.NotFoundException {
-        JournalEntity newJournal = JournalEntity.builder().
-                title(journal.getTitle()).
-                content(journal.getContent()).
-                user(userRepository.findById(String.valueOf(journal.getUserId())).orElseThrow(ChangeSetPersister.NotFoundException::new)).
-                build();
+        if (journal.getUserId() != null) {
+            JournalEntity newJournal = JournalEntity.builder().
+                    title(journal.getTitle()).
+                    content(journal.getContent()).
+                    user(userRepository.findById(journal.getUserId()).orElseThrow(ChangeSetPersister.NotFoundException::new)).
+                    build();
 
-        journalRepository.save(newJournal);
+            journalRepository.save(newJournal);
+        }
     }
 
     public List<JournalDto> getAll() {
