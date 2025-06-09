@@ -1,5 +1,6 @@
 package com.example.user.groups.entities;
 
+import com.example.user.permissions.entities.ModuleEntity;
 import com.example.user.users.entities.UserEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -33,5 +34,9 @@ public class GroupEntity {
     @Schema(description = "Users to which this group is mapped to", example = "1")
     @ManyToMany(mappedBy = "groups", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<UserEntity> users = new ArrayList<>();
+
+    @Schema(description = "List of modules mapped to this group")
+    @ManyToMany(mappedBy = "groups", cascade = CascadeType.ALL)
+    private List<ModuleEntity> modules = new ArrayList<>();
 }
 

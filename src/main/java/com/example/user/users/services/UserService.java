@@ -117,10 +117,10 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity userEntity = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return User.builder()
+        return UserEntity.builder()
                 .username(userEntity.getUsername())
                 .password(userEntity.getPassword())
-                .roles(new String[] {userEntity.getRole()})
+                .id(userEntity.getId())
                 .build();
     }
 

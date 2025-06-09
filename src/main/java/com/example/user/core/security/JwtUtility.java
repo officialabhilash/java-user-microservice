@@ -18,7 +18,10 @@ public class JwtUtility {
     private String SECRET_KEY;
 
     @Value("${spring.application.jwt.access-token-lifetime}")
-    private String ACCESS_TOKEN_LIFETIME;
+    private Integer ACCESS_TOKEN_LIFETIME;
+
+    @Value("${spring.application.jwt.refresh-token-lifetime}")
+    private Integer REFRESH_TOKEN_LIFETIME;
 
     private SecretKey getSecretKey() {
         byte[] keyBytes = SECRET_KEY.getBytes(); // based on key length the algorithm will be decided.
@@ -29,7 +32,7 @@ public class JwtUtility {
         try {
             JwtParser jwtParser = Jwts.parserBuilder().setSigningKey(getSecretKey()).build();
             Claims claims = jwtParser.parseClaimsJwt(rawToken).getBody();
-            if (claims.getExpiration().before(new Date())){
+            if (claims.getExpiration().before(new Date())) {
                 throw new JwtException("Token Expired get a new token");
             }
             return Optional.of(claims);
@@ -39,24 +42,39 @@ public class JwtUtility {
         }
     }
 
-    private String createToken(Map<String, Object> claims, String username) {
-        return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(username)
-                .setHeader(Map.of("TYP", "JWT"))
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + (long) Integer.parseInt(ACCESS_TOKEN_LIFETIME) * 60 * 1000))
-                .signWith(getSecretKey(), SignatureAlgorithm.HS256)
-                .compact();
+    private String createToken(Map<String, Object> claims, String username, Boolean isForAccessToken) {
+        if (isForAccessToken != null) {
+            if (isForAccessToken) {
+                return Jwts.builder()
+                        .setClaims(claims)
+                        .setSubject(username)
+                        .setHeader(Map.of("TYP", "JWT"))
+                        .setIssuedAt(new Date(System.currentTimeMillis()))
+                        .setExpiration(new Date(System.currentTimeMillis() + (long) (ACCESS_TOKEN_LIFETIME) * 60 * 1000))
+                        .signWith(getSecretKey(), SignatureAlgorithm.HS256)
+                        .compact();
+            } else {
+                return Jwts.builder()
+                        .setClaims(claims)
+                        .setSubject(username)
+                        .setHeader(Map.of("TYP", "JWT"))
+                        .setIssuedAt(new Date(System.currentTimeMillis()))
+                        .setExpiration(new Date(System.currentTimeMillis() + (long) (REFRESH_TOKEN_LIFETIME) * 60 * 60 * 1000))
+                        .signWith(getSecretKey(), SignatureAlgorithm.HS256)
+                        .compact();
+            }
+        } else {
+            throw new JwtException("Illegal arguments passed.");
+        }
     }
 
-    public String generateToken(String username) {
-        Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, username);
-    }
+        public String generateToken (String username, Boolean isForAccessToken){
+            Map<String, Object> claims = new HashMap<>();
+            return createToken(claims, username, isForAccessToken);
+        }
 
-    public String refreshToken(String rawRefresh){
-        return "Assume it to be true";
-    }
+        public String refreshToken (String rawRefresh){
+            return "Assume it to be true";
+        }
 
-}
+    }

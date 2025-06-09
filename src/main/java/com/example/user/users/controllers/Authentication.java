@@ -3,8 +3,6 @@ package com.example.user.users.controllers;
 import com.example.user.core.security.JwtUtility;
 import com.example.user.users.dto.AuthTokenDto;
 import com.example.user.users.dto.UserAuthenticationDto;
-import com.example.user.users.dto.UserDto;
-import com.example.user.users.entities.UserEntity;
 import com.example.user.users.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -51,8 +49,10 @@ public class Authentication {
                             userDto.getPassword()));
 
             UserDetails userDetails = userService.loadUserByUsername(userDto.getUsername());
-            String jwt = jwtUtility.generateToken(userDetails.getUsername());
-            return new ResponseEntity<>(Map.of("access", jwt), HttpStatus.OK);
+            String access = jwtUtility.generateToken(userDetails.getUsername(), Boolean.TRUE);
+            String refresh = jwtUtility.generateToken(userDetails.getUsername(), Boolean.FALSE);
+
+            return new ResponseEntity<>(Map.of("access", access, "refresh",""), HttpStatus.OK);
         } catch (Exception e) {
             System.out.println("error occurred");
             return new ResponseEntity<>("Bad Credentials provided.", HttpStatus.BAD_REQUEST);
@@ -77,7 +77,7 @@ public class Authentication {
             @ApiResponse(responseCode = "400", description = "Invalid credentials")
     })
     @PostMapping("forgot-password/")
-    public ResponseEntity<UserDto> forgotPassword(@RequestBody UserAuthenticationDto userDto) {
-        return new ResponseEntity(Map.of("message", "success"), HttpStatus.OK);
+    public ResponseEntity<Map<String, String>> forgotPassword(@RequestBody UserAuthenticationDto userDto) {
+        return new ResponseEntity<>(Map.of("message", "success"), HttpStatus.OK);
     }
 }

@@ -66,11 +66,15 @@ public class UserEntity implements UserDetails {
     private List<GroupEntity> groups = new ArrayList<>();
 
     @Schema(description = "User role.", example = "s")
-    private String role;
+    public List<String> roles() {
+        // TODO: Add proper method
+        return List.of("Role1", "Role2");
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role));
+        // TODO: Use caching here.
+        return roles().stream().map(SimpleGrantedAuthority::new).toList();
     }
 
     @Override
