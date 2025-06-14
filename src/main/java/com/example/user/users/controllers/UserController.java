@@ -4,16 +4,14 @@ import com.example.user.core.controllers.BaseController;
 import com.example.user.users.dto.UserDto;
 import com.example.user.users.services.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.HttpRequestHandler;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +42,7 @@ public class UserController extends BaseController<UserDto> {
     @PostMapping("/")
     public ResponseEntity<?> create(@RequestBody UserDto newUser) {
         newUser.setId(null);
-        if (newUser.getPassword().isBlank()) {
+        if (newUser.getPassword() != null && newUser.getPassword().isBlank()) {
             return new ResponseEntity<>(Map.of("error", "Password empty", "message", "Please Enter Password"), HttpStatus.BAD_REQUEST);
         }
         try {
@@ -78,5 +76,10 @@ public class UserController extends BaseController<UserDto> {
     public ResponseEntity<?> changePassword(@PathVariable Long id, @RequestBody UserDto userDto, HttpServletRequest request) {
         userService.setPasswordForUser(userDto, id);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    @GetMapping("{id}/user-permissions")
+    public ResponseEntity<?> userPermissions(@PathVariable Long id) {
+        return ResponseEntity.ofNullable(userService.getUserModulePermissionsMap(id));
     }
 }

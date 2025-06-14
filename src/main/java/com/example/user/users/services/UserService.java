@@ -1,8 +1,10 @@
 package com.example.user.users.services;
 
 import com.example.user.users.dto.UserDto;
+import com.example.user.users.dto.UserPermissionsDto;
 import com.example.user.users.entities.UserEntity;
 import com.example.user.users.repository.UserRepository;
+import com.sun.source.tree.Tree;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +16,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
 
     @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     // if the PasswordEncoder is not linted, don't worry, it is a bean.
     @Autowired
@@ -89,7 +91,7 @@ public class UserService implements UserDetailsService {
     public UserDto updateUserById(Long id, UserDto userData) {
         UserEntity old = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         // username and date can't change
-        old.setUsername(!userData.getUsername().isBlank() ? userData.getUsername() : old.getUsername());
+        old.setUsername(userData.getUsername() != null && !userData.getUsername().isBlank() ? userData.getUsername() : old.getUsername());
         old.setDate(userData.getDate() != null && !userData.getDate().toString().isBlank() ? userData.getDate() : LocalDateTime.now());
 
         // first name, last name can change
@@ -126,8 +128,9 @@ public class UserService implements UserDetailsService {
 
     /**
      * Sets a new password for the user with the given id, using the password from the provided UserDto.
+     *
      * @param userDto UserDto containing the new password (in plain text)
-     * @param id The id of the user whose password is to be changed
+     * @param id      The id of the user whose password is to be changed
      * @return true if password was updated, false if user not found
      */
     public boolean setPasswordForUser(UserDto userDto, Long id) {
@@ -139,5 +142,31 @@ public class UserService implements UserDetailsService {
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         userRepository.save(user);
         return true;
+    }
+
+    public List<UserPermissionsDto> getAllUserPermissionsDto(Long id) {
+        return userRepository.getUserPermissions(id);
+    }
+
+    public Map<String, Set<String>> getUserModulePermissionsMap(Long id) {
+        List<UserPermissionsDto> userPermissionsDtoList = getAllUserPermissionsDto(id);
+        return userPermissionsDtoList
+                .stream()
+                .collect(Collectors.toMap(
+                        UserPermissionsDto::getModuleName,
+                        x -> new HashSet<>(Set.of(x.getPermissionName() != null ? x.getPermissionName() : "")),
+                        (old, newMerge) -> old.addAll(newMerge) ? old : old,
+                        TreeMap::new
+                        )
+                );
+
+    }
+
+    public Set<String> getUserRoles(Long id){
+        List<UserPermissionsDto> userPermissions = userRepository.getUserPermissions(id);
+        return userPermissions
+                .stream()
+                .map(x->x.getGroupName() + "," + x.getPermissionName() + "," + x.getModuleName())
+                .collect(Collectors.toSet());
     }
 }

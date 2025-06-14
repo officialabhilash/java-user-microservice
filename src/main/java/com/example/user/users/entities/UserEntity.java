@@ -1,22 +1,26 @@
 package com.example.user.users.entities;
 
+import com.example.user.core.base.entities.BaseAbstractAuditableEntity;
 import com.example.user.groups.entities.GroupEntity;
 import com.example.user.journal.entities.JournalEntity;
+import com.example.user.permissions.entities.ModuleEntity;
+import com.example.user.users.dto.UserPermissionsDto;
+import com.example.user.users.services.UserService;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -29,7 +33,11 @@ import java.util.List;
                 @Index(name = "idx_username", columnList = "username")
         }
 )
-public class UserEntity implements UserDetails {
+public class UserEntity extends BaseAbstractAuditableEntity implements UserDetails {
+
+    @Autowired
+    @Lazy
+    private UserService userService;
 
     @Schema(description = "Unique identifier of the user", example = "507f1f77bcf86cd799439011")
     @Id
@@ -60,21 +68,18 @@ public class UserEntity implements UserDetails {
     private LocalDateTime date;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<JournalEntity> journals;
+    private List<JournalEntity> journals = new ArrayList<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany()
     private List<GroupEntity> groups = new ArrayList<>();
 
-    @Schema(description = "User role.", example = "s")
-    public List<String> roles() {
-        // TODO: Add proper method
-        return List.of("Role1", "Role2");
-    }
+    @Schema(description = "User permissions.", example = "ADMIN CAN READ USERS")
+    @Transient
+    private Set<String> roles;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // TODO: Use caching here.
-        return roles().stream().map(SimpleGrantedAuthority::new).toList();
+        return roles.stream().map(SimpleGrantedAuthority::new).toList();
     }
 
     @Override

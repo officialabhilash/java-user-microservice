@@ -1,6 +1,6 @@
 package com.example.user.groups.entities;
 
-import com.example.user.permissions.entities.ModuleEntity;
+import com.example.user.permissions.entities.ModuleGroupEntity;
 import com.example.user.users.entities.UserEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -36,7 +36,7 @@ public class GroupEntity {
     private List<UserEntity> users = new ArrayList<>();
 
     @Schema(description = "List of modules mapped to this group")
-    @ManyToMany(mappedBy = "groups", cascade = CascadeType.ALL)
-    private List<ModuleEntity> modules = new ArrayList<>();
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    private List<ModuleGroupEntity> moduleGroups = new ArrayList<>();
 }
 
