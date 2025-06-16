@@ -3,22 +3,18 @@ package com.example.user.users.entities;
 import com.example.user.core.base.entities.BaseAbstractAuditableEntity;
 import com.example.user.groups.entities.GroupEntity;
 import com.example.user.journal.entities.JournalEntity;
-import com.example.user.permissions.entities.ModuleEntity;
-import com.example.user.users.dto.UserPermissionsDto;
-import com.example.user.users.services.UserService;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
@@ -34,10 +30,6 @@ import java.util.stream.Collectors;
         }
 )
 public class UserEntity extends BaseAbstractAuditableEntity implements UserDetails {
-
-    @Autowired
-    @Lazy
-    private UserService userService;
 
     @Schema(description = "Unique identifier of the user", example = "507f1f77bcf86cd799439011")
     @Id

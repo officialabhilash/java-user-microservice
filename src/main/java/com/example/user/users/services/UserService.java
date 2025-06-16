@@ -51,14 +51,14 @@ public class UserService implements UserDetailsService {
         } else if (userRepository.existsByEmail(userDto.getEmail())) {
             throw new ValidationException("Email address already Registered.");
         }
-        UserEntity user = UserEntity.builder().
-                email(userDto.getEmail()).
-                firstName(userDto.getFirstName()).
-                lastName(userDto.getLastName()).
-                username(userDto.getUsername()).
-                date(LocalDateTime.now()).
-                password(passwordEncoder.encode(userDto.getPassword())).
-                build();
+        UserEntity user = UserEntity.builder()
+                .email(userDto.getEmail())
+                .firstName(userDto.getFirstName())
+                .lastName(userDto.getLastName())
+                .username(userDto.getUsername())
+                .date(LocalDateTime.now())
+                .password(passwordEncoder.encode(userDto.getPassword()))
+                .build();
         userRepository.save(user);
     }
 
@@ -119,11 +119,14 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity userEntity = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return UserEntity.builder()
+        UserEntity user = UserEntity.builder()
                 .username(userEntity.getUsername())
                 .password(userEntity.getPassword())
                 .id(userEntity.getId())
+                .roles(userEntity.getRoles())
                 .build();
+        user.setRoles(getUserRoles(user.getId()));
+        return user;
     }
 
     /**
