@@ -15,7 +15,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -39,18 +38,7 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private Environment environment;
 
-    private void authorizeViaAuthHeaders(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authHeader = request.getHeader("Authorization");
-        String rawToken = null;
-        String jwt = null;
-        String subject = null;
-
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            rawToken = authHeader.substring(7); // "Bearer "
-            Claims claims = jwtUtility.extractAllSignedClaims(rawToken).orElseThrow(() -> new ValidationException("Bad Token"));
-            subject = claims.getSubject();
-            System.out.println(subject);
-        }
+    private void loadSecurityContextOnValidSubject(String subject, HttpServletRequest request){
         if (subject != null) {
             UserDetails userDetails = userService.loadUserByUsername(subject);
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
@@ -64,27 +52,31 @@ public class JwtFilter extends OncePerRequestFilter {
         }
     }
 
+    private void authorizeViaAuthHeaders(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String authHeader = request.getHeader("Authorization");
+        String rawToken = null;
+        String jwt = null;
+        String subject = null;
+
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            rawToken = authHeader.substring(7); // "Bearer "
+            Claims claims = jwtUtility.extractAllSignedClaims(rawToken).orElseThrow(() -> new ValidationException("Bad Token"));
+            subject = claims.getSubject();
+            System.out.println(subject);
+        }
+        loadSecurityContextOnValidSubject(subject, request);
+    }
+
     private void authorizeViaCookies(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String accessCookieName = StringUtils.hasText(environment.getProperty("app.jwt.access-cookie-name")) ? environment.getProperty("app.jwt.access-cookie-name") : "JAccess";
         Optional<Cookie> authCookieValue = Arrays.stream(request.getCookies()).filter(x -> x.getName().equals(accessCookieName)).findFirst();
-        String jwt = null;
         String subject = null;
 
         if (authCookieValue.isPresent()) {
             Claims claims = jwtUtility.extractAllSignedClaims(authCookieValue.get().getValue()).orElseThrow(() -> new ValidationException("Bad Token"));
             subject = claims.getSubject();
         }
-        if (subject != null) {
-            UserDetails userDetails = userService.loadUserByUsername(subject);
-            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-                    userDetails,
-                    null,
-                    userDetails.getAuthorities()
-            );
-            ((UserEntity) auth.getPrincipal()).setPassword("");
-            auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(auth);
-        }
+        loadSecurityContextOnValidSubject(subject, request);
     }
 
     @Override
