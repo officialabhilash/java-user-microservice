@@ -1,5 +1,6 @@
 package com.example.user.users.controllers;
 
+import com.example.user.core.base.utils.SetCookiesUtil;
 import com.example.user.core.security.JwtUtility;
 import com.example.user.users.dto.AuthTokenDto;
 import com.example.user.users.dto.UserAuthenticationDto;
@@ -8,12 +9,19 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.header.Header;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,13 +43,16 @@ public class Authentication {
     @Autowired
     private JwtUtility jwtUtility;
 
+    @Autowired
+    private Environment environment;
+
     //    @Operation(summary = "Authenticate using user credentials", description = "Returns refresh and access tokens.")
 //    @ApiResponses(value = {
 //            @ApiResponse(responseCode = "200", description = "Successfully logged in."),
 //            @ApiResponse(responseCode = "400", description = "Invalid credentials")
 //    })
     @PostMapping("authenticate/")
-    public ResponseEntity<?> authenticate(@RequestBody UserAuthenticationDto userDto) {
+    public ResponseEntity<Map<String, String>> authenticate(@RequestBody UserAuthenticationDto userDto, HttpServletResponse response) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -50,12 +61,27 @@ public class Authentication {
 
             UserDetails userDetails = userService.loadUserByUsername(userDto.getUsername());
             String access = jwtUtility.generateToken(userDetails.getUsername(), Boolean.TRUE);
-            String refresh = jwtUtility.generateToken(userDetails.getUsername(), Boolean.FALSE);
+//            String refresh = jwtUtility.generateToken(userDetails.getUsername(), Boolean.FALSE);
+            String refresh = "In progress";
 
-            return new ResponseEntity<>(Map.of("access", access, "refresh",""), HttpStatus.OK);
+            String accessCookieName = StringUtils.hasText(environment.getProperty("app.jwt.access-cookie-name")) ? environment.getProperty("app.jwt.access-cookie-name") : "JAccess";
+            int accessJwtLifetime = Integer.parseInt(StringUtils.hasText(environment.getProperty("spring.application.jwt.access-token-lifetime")) ? environment.getProperty("spring.application.jwt.access-token-lifetime") : "5");
+            // Set cookies now
+            ResponseCookie responseCookie = SetCookiesUtil.setCookie(accessCookieName, access, (accessJwtLifetime) * 60);
+//            SetCookiesUtil.setCookie("JRefreshJWT", refresh, response, true);
+            return ResponseEntity
+                    .ok()
+                    .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+                    .body(Map.of("access", access, "refresh", refresh));
+
         } catch (Exception e) {
-            System.out.println("error occurred");
-            return new ResponseEntity<>("Bad Credentials provided.", HttpStatus.BAD_REQUEST);
+            System.out.println("error occurred:- ");
+            for (StackTraceElement trace : e.getStackTrace()) {
+                System.out.println(trace.toString());
+            }
+            return ResponseEntity
+                    .badRequest()
+                    .body(Map.of("detail","Bad Credentials provided."));
         }
     }
 

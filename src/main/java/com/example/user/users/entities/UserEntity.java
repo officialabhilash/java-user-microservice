@@ -91,7 +91,7 @@ public class UserEntity extends BaseAbstractAuditableEntity implements UserDetai
 
     @Override
     public boolean isEnabled() {
-        return isEnabled;
+        return true;
     }
 }
 

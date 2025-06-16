@@ -120,9 +120,13 @@ public class UserService implements UserDetailsService {
         UserEntity userEntity = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         UserEntity user = UserEntity.builder()
+                .id(userEntity.getId())
                 .username(userEntity.getUsername())
                 .password(userEntity.getPassword())
-                .id(userEntity.getId())
+                .email(userEntity.getEmail())
+                .isEnabled(userEntity.isEnabled())
+                .firstName(userEntity.getFirstName())
+                .lastName(userEntity.getLastName())
                 .roles(userEntity.getRoles())
                 .build();
         user.setRoles(getUserRoles(user.getId()));

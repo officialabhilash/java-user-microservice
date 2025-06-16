@@ -31,7 +31,7 @@ public class JwtUtility {
     public Optional<Claims> extractAllSignedClaims(String rawToken) {
         try {
             JwtParser jwtParser = Jwts.parserBuilder().setSigningKey(getSecretKey()).build();
-            Claims claims = jwtParser.parseClaimsJwt(rawToken).getBody();
+            Claims claims = jwtParser.parseClaimsJws(rawToken).getBody();
             if (claims.getExpiration().before(new Date())) {
                 throw new JwtException("Token Expired get a new token");
             }
