@@ -10,11 +10,10 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Builder
 public class SessionEntity {
 
     @Id
