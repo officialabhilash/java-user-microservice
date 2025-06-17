@@ -60,19 +60,15 @@ public class Authentication {
                             userDto.getPassword()));
 
             UserDetails userDetails = userService.loadUserByUsername(userDto.getUsername());
-            String access = jwtUtility.generateToken(userDetails.getUsername(), Boolean.TRUE);
-//            String refresh = jwtUtility.generateToken(userDetails.getUsername(), Boolean.FALSE);
-            String refresh = "In progress";
-
+            String access = jwtUtility.generateToken(userDetails.getUsername());
             String accessCookieName = StringUtils.hasText(environment.getProperty("app.jwt.access-cookie-name")) ? environment.getProperty("app.jwt.access-cookie-name") : "JAccess";
             int accessJwtLifetime = Integer.parseInt(StringUtils.hasText(environment.getProperty("spring.application.jwt.access-token-lifetime")) ? environment.getProperty("spring.application.jwt.access-token-lifetime") : "5");
             // Set cookies now
             ResponseCookie responseCookie = SetCookiesUtil.setCookie(accessCookieName, access, (accessJwtLifetime) * 60);
-//            SetCookiesUtil.setCookie("JRefreshJWT", refresh, response, true);
             return ResponseEntity
                     .ok()
                     .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
-                    .body(Map.of("access", access, "refresh", refresh));
+                    .body(Map.of("token", access));
 
         } catch (Exception e) {
             System.out.println("error occurred:- ");
