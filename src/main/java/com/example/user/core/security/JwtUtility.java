@@ -44,22 +44,18 @@ public class JwtUtility {
 
     private String createToken(Map<String, Object> claims, String username) {
         return Jwts.builder()
-                    .setClaims(claims)
-                    .setSubject(username)
-                    .setHeader(Map.of("TYP", "JWT"))
-                    .setIssuedAt(new Date(System.currentTimeMillis()))
-                    .setExpiration(new Date(System.currentTimeMillis() + (long) (ACCESS_TOKEN_LIFETIME) * 60 * 1000))
-                    .signWith(getSecretKey(), SignatureAlgorithm.HS256)
-                    .compact();
+                .setClaims(claims)
+                .setSubject(username)
+                .setHeader(Map.of("TYP", "JWT"))
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + (long) (ACCESS_TOKEN_LIFETIME) * 60 * 1000))
+                .signWith(getSecretKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 
-        public String generateToken (String username){
-            Map<String, Object> claims = new HashMap<>();
-            return createToken(claims, username);
-        }
-
-    public String refreshToken(String rawRefresh) {
-        return "Assume it to be true";
+    public String generateToken(String username) {
+        Map<String, Object> claims = new HashMap<>();
+        return createToken(claims, username);
     }
 
 }

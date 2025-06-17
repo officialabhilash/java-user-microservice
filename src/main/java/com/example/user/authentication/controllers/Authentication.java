@@ -1,17 +1,14 @@
-package com.example.user.users.controllers;
+package com.example.user.authentication.controllers;
 
 import com.example.user.core.base.utils.SetCookiesUtil;
 import com.example.user.core.security.JwtUtility;
-import com.example.user.users.dto.AuthTokenDto;
 import com.example.user.users.dto.UserAuthenticationDto;
 import com.example.user.users.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.header.Header;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -51,8 +47,8 @@ public class Authentication {
 //            @ApiResponse(responseCode = "200", description = "Successfully logged in."),
 //            @ApiResponse(responseCode = "400", description = "Invalid credentials")
 //    })
-    @PostMapping("authenticate/")
-    public ResponseEntity<Map<String, String>> authenticate(@RequestBody UserAuthenticationDto userDto, HttpServletResponse response) {
+    @PostMapping("login/")
+    public ResponseEntity<Map<String, String>> authenticate(@RequestBody UserAuthenticationDto userDto) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -78,18 +74,6 @@ public class Authentication {
             return ResponseEntity
                     .badRequest()
                     .body(Map.of("detail","Bad Credentials provided."));
-        }
-    }
-
-    @PostMapping("refresh/")
-    public ResponseEntity<?> refreshToken(@RequestBody AuthTokenDto authTokenDto) {
-        try {
-            String jwt = jwtUtility.refreshToken(authTokenDto.getRefresh());
-            authTokenDto.setAccess(jwt);
-            return new ResponseEntity<>(authTokenDto, HttpStatus.OK);
-        } catch (Exception e) {
-            System.out.println("error occurred");
-            return new ResponseEntity<>("Bad Credentials provided.", HttpStatus.BAD_REQUEST);
         }
     }
 

@@ -1,5 +1,6 @@
 package com.example.user.users.entities;
 
+import com.example.user.authentication.entities.SessionEntity;
 import com.example.user.core.base.entities.BaseAbstractAuditableEntity;
 import com.example.user.groups.entities.GroupEntity;
 import com.example.user.journal.entities.JournalEntity;
@@ -64,6 +65,9 @@ public class UserEntity extends BaseAbstractAuditableEntity implements UserDetai
 
     @ManyToMany()
     private List<GroupEntity> groups = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<SessionEntity> sessions = new ArrayList<>();
 
     @Schema(description = "User permissions.", example = "ADMIN CAN READ USERS")
     @Transient
