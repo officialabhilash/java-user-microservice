@@ -42,7 +42,12 @@ public class UserController extends BaseController<UserDto> {
     public ResponseEntity<?> create(@RequestBody UserDto newUser) {
         newUser.setId(null);
         if (newUser.getPassword() != null && newUser.getPassword().isBlank()) {
-            return new ResponseEntity<>(Map.of("error", "Password empty", "message", "Please Enter Password"), HttpStatus.BAD_REQUEST);
+            return ResponseEntity
+                    .badRequest()
+                    .body(Map.of(
+                            "error", "Password empty",
+                            "message", "Please Enter Password")
+                    );
         }
         try {
             userService.createUser(newUser);
@@ -56,7 +61,9 @@ public class UserController extends BaseController<UserDto> {
     @PatchMapping("/{id}/")
     public ResponseEntity<UserDto> partialUpdate(@PathVariable Long id, @RequestBody UserDto updateUser) {
         UserDto user = userService.updateUserById(id, updateUser);
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return ResponseEntity
+                .ok()
+                .body(user);
     }
 
 
@@ -65,16 +72,10 @@ public class UserController extends BaseController<UserDto> {
     public ResponseEntity<?> delete(@PathVariable Long id) {
         boolean isDeleted = userService.deleteUserById(id);
         if (isDeleted) {
-            return new ResponseEntity<>(HttpStatus.OK);
+            return ResponseEntity.ok().build();
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
-    }
-
-    @PostMapping("{id}/change-password/")
-    public ResponseEntity<?> changePassword(@PathVariable Long id, @RequestBody UserDto userDto, HttpServletRequest request) {
-        userService.setPasswordForUser(userDto, id);
-        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @GetMapping("{id}/user-permissions")

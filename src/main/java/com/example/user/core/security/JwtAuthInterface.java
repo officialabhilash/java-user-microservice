@@ -1,5 +1,6 @@
 package com.example.user.core.security;
 
+import com.example.user.users.entities.UserEntity;
 import io.jsonwebtoken.Claims;
 
 import javax.crypto.SecretKey;
@@ -9,15 +10,13 @@ import java.util.Optional;
 public interface JwtAuthInterface {
     SecretKey getSecretKey();
 
-    String createToken(Map<String, Object> claims, String username);
+    void createUserSession(UserEntity user);
 
-    void registerToken(String token);
+    String createSessionToken(Map<String, Object> claims, String username);
 
     String getSessionByToken(String token);
 
     Optional<Claims> extractAllSignedClaims(String rawToken);
-
-    void blacklistToken(String token);
 
     void closeUserSession(String token);
 }

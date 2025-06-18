@@ -6,7 +6,6 @@ import lombok.*;
 
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -21,7 +20,14 @@ public class TokenEntity {
 
     private Long exp;
 
+    private String token;
+
     @ManyToOne(cascade = CascadeType.ALL)
     private SessionEntity session;
+
+    @Override
+    public String toString(){
+        return this.token + this.exp;
+    }
 
 }

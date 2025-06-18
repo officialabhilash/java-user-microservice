@@ -25,7 +25,6 @@ public class UserService implements UserDetailsService {
     @Autowired
     private final UserRepository userRepository;
 
-    // if the PasswordEncoder is not linted, don't worry, it is a bean.
     @Autowired
     private final PasswordEncoder passwordEncoder;
 
@@ -58,6 +57,7 @@ public class UserService implements UserDetailsService {
                 .username(userDto.getUsername())
                 .date(LocalDateTime.now())
                 .password(passwordEncoder.encode(userDto.getPassword()))
+                .groups(userDto.getGroups())
                 .build();
         userRepository.save(user);
     }

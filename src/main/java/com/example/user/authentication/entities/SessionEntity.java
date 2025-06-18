@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.antlr.v4.runtime.Token;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -24,10 +25,10 @@ public class SessionEntity {
 
     private Long sessionEnded;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity user;
 
     @OneToMany(mappedBy = "session", fetch = FetchType.EAGER)
-    private List<TokenEntity> tokens;
+    private List<TokenEntity> tokens = new ArrayList<>();
 
 }
