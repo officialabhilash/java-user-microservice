@@ -1,8 +1,11 @@
 package com.example.user.core.filters;
 
+import com.example.user.authentication.services.AuthenticationService;
+import com.example.user.authentication.services.SessionService;
+import com.example.user.core.exceptions.SessionStillActiveException;
 import com.example.user.core.security.JwtUtility;
 import com.example.user.users.entities.UserEntity;
-import com.example.user.users.services.UserService;
+import com.example.user.users.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,17 +33,38 @@ import java.util.Optional;
 public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired
-    private UserService userService;
+    private AuthenticationService authenticationService;
 
     @Autowired
     private JwtUtility jwtUtility;
 
     @Autowired
+    private SessionService sessionService;
+
+    @Autowired
     private Environment environment;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    private void validateSubjectSessionFromDb(UserDetails userDetails){
+        // TODO: Complete this method to fetch session details from DB
+        UserEntity userEntity = (UserEntity) userDetails;
+        if (sessionService.isUserSessionActive(userEntity)) {
+            authenticationService.closeUserSession(userDetails);
+            userEntity.setIsEnabled(false);
+            userRepository.save(userEntity);
+            throw new SessionStillActiveException("Your session was active on another machine, hence your account is " +
+                    "temporarily blocked for access. Contact Admin for further actions");
+        }
+    }
 
     private void loadSecurityContextOnValidSubject(String subject, HttpServletRequest request){
         if (subject != null) {
-            UserDetails userDetails = userService.loadUserByUsername(subject);
+            // Token is valid, hence  get the user details from username
+            UserDetails userDetails = authenticationService.loadUserByUsername(subject);
+            // Check whether the session in db is valid or not, else throw error and close all sessions
+            validateSubjectSessionFromDb(userDetails);
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                     userDetails,
                     null,

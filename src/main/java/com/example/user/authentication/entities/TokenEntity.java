@@ -14,13 +14,15 @@ public class TokenEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private String id;
+    private Long id;
 
     private Long iat;
 
     private Long exp;
 
     private String token;
+
+    private Boolean isPrematureTerminated;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private SessionEntity session;

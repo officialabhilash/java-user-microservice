@@ -1,9 +1,9 @@
 package com.example.user.authentication.entities;
 
 import com.example.user.users.entities.UserEntity;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
-import org.antlr.v4.runtime.Token;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +21,12 @@ public class SessionEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
-    private Long sessionStart;
+    private Long sessionStartTime;
 
-    private Long sessionEnded;
+    @Nullable
+    private Long sessionEndTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private UserEntity user;
 
     @OneToMany(mappedBy = "session", fetch = FetchType.EAGER)
