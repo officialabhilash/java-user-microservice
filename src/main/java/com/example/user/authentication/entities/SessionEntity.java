@@ -23,7 +23,6 @@ public class SessionEntity {
 
     private Long sessionStartTime;
 
-    @Nullable
     private Long sessionEndTime;
 
     @ManyToOne

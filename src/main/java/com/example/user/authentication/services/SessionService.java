@@ -4,7 +4,9 @@ import com.example.user.authentication.entities.SessionEntity;
 import com.example.user.authentication.repository.SessionRepository;
 import com.example.user.users.entities.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,10 +17,15 @@ public class SessionService {
     @Autowired
     private SessionRepository sessionRepository;
 
+    @Value("${app.jwt.session.lifetime-hours}")
+    private Integer sessionLifeTime;
+
     public SessionEntity createSession(UserEntity user) {
         SessionEntity session = SessionEntity
                 .builder()
                 .sessionStartTime(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC))
+                .sessionEndTime(
+                        LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) + sessionLifeTime * 60 * 60)
                 .user(user)
                 .build();
         try {
@@ -30,16 +37,19 @@ public class SessionService {
         return session;
     }
 
+    /**
+     * Takes UserEntity object and finds the latest session object from db and compares its
+     * session end time with current time in epoch seconds.
+     */
     public boolean isUserSessionActive(UserEntity user) {
-        SessionEntity session = sessionRepository.getLatestSessionByUser(user);
-        if (session == null){
+        SessionEntity session = sessionRepository.findFirstByUserOrderBySessionStartTimeDesc(user);
+        if (session == null) {
             return false;
-        }
-        else return session.getSessionEndTime() == null;
+        } else return session.getSessionEndTime() > LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
     }
 
     public SessionEntity getLatestSessionByUsername(String username) {
-        return sessionRepository.getLatestSessionByUsername(username);
+        return sessionRepository.getLatestSessionByUsername(username, PageRequest.of(0, 1)).get(0);
     }
 
     public void closeUserSessions(Long userId, Long dateTime) {

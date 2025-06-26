@@ -14,6 +14,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,7 +41,7 @@ public class AuthenticationService implements UserDetailsService, JwtAuthInterfa
     private TokenRepository tokenRepository;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
+    private ApplicationContext applicationContext;
 
     @Value("${spring.application.secret-key-jwt}")
     private String SECRET_KEY;
@@ -66,6 +67,7 @@ public class AuthenticationService implements UserDetailsService, JwtAuthInterfa
      */
     @Override
     public String loginViaCredentials(UserAuthenticationDto userAuthenticationDto) {
+        AuthenticationManager authenticationManager = applicationContext.getBean(AuthenticationManager.class);
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         userAuthenticationDto.getUsername(),
@@ -89,12 +91,13 @@ public class AuthenticationService implements UserDetailsService, JwtAuthInterfa
         // 1. begin by creating a session
         // 2. create session's token
         SessionEntity userSession = createUserSession(userEntity);
+
         Map<String, Object> claims = Map.of(
                 "userId", userEntity.getId(),
-                "groups", userEntity.getGroups()
+                "groups", userEntity.getGroups() != null ? userEntity.getGroups()
                         .stream()
                         .map(GroupEntity::getId)
-                        .toList()
+                        .toList() : List.of()
         );
         return createSessionToken(claims, userSession);
     }
@@ -105,9 +108,9 @@ public class AuthenticationService implements UserDetailsService, JwtAuthInterfa
                 .setClaims(claims)
                 .setSubject(username)
                 .setHeader(Map.of("TYP", "JWT"))
-                .setIssuedAt(new Date(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)))
-                .setExpiration(
-                        new Date(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC)
+                .setIssuedAt(new Date(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) * 1000))
+                .setExpiration(new Date(
+                        LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) * 1000
                                 + (long) (ACCESS_TOKEN_LIFETIME) * 60 * 1000))
                 .signWith(getSecretKey(), SignatureAlgorithm.HS256)
                 .compact();
@@ -120,7 +123,6 @@ public class AuthenticationService implements UserDetailsService, JwtAuthInterfa
         return createToken(claims, username);
     }
 
-
     /**
      * After creating user session, invalidate other tokens,
      */
@@ -129,9 +131,11 @@ public class AuthenticationService implements UserDetailsService, JwtAuthInterfa
 
         String generatedToken = generateToken(claims, session.getUser().getUsername());
         // no need to verify the claims since token is generated locally
-        Claims generatedTokenClaims = Jwts.parserBuilder()
+        Claims generatedTokenClaims = Jwts
+                .parserBuilder()
+                .setSigningKey(getSecretKey())
                 .build()
-                .parseClaimsJwt(generatedToken)
+                .parseClaimsJws(generatedToken)
                 .getBody();
         TokenEntity tokenEntity = TokenEntity
                 .builder()

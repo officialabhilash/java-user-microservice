@@ -3,6 +3,7 @@ package com.example.user.authentication.repository;
 import com.example.user.authentication.entities.SessionEntity;
 import com.example.user.users.entities.UserEntity;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,18 +15,25 @@ public interface SessionRepository extends JpaRepository<SessionEntity, String> 
 
     List<SessionEntity> getSessionsByUser(UserEntity user);
 
-    SessionEntity getLatestSessionByUser(UserEntity user);
+    SessionEntity findFirstByUserOrderBySessionStartTimeDesc(UserEntity user);
 
-    SessionEntity getLatestSessionByUsername(String username);
+    @Query("""
+            SELECT s
+             FROM SessionEntity s
+             JOIN s.user u
+             WHERE u.username = :username
+             ORDER BY s.sessionStartTime DESC
+            """)
+    List<SessionEntity> getLatestSessionByUsername(@Param("username") String username, Pageable pageable);
 
     @Modifying
-    @Transactional
+    @Transactional(Transactional.TxType.MANDATORY)
     @Query("""
             UPDATE SessionEntity s
             SET
-             s.sessionEndTime = :dateTime,
+             s.sessionEndTime = :dateTime
             WHERE
-             s.user_id = :userId
+             s.user = :userId
             """)
     void closeAllUserSession(@Param("userId") Long userId, @Param("dateTime") Long dateTime);
 
@@ -34,7 +42,7 @@ public interface SessionRepository extends JpaRepository<SessionEntity, String> 
     @Query("""
             UPDATE com.example.user.authentication.entities.TokenEntity t
             SET
-             t.isPrematureTerminated = TRUE,
+             t.isPrematureTerminated = TRUE
             WHERE
              t.session.user.id = :userId
             """)

@@ -2,11 +2,11 @@ package com.example.user.core.filters;
 
 import com.example.user.authentication.services.AuthenticationService;
 import com.example.user.authentication.services.SessionService;
-import com.example.user.core.exceptions.SessionStillActiveException;
 import com.example.user.core.security.JwtUtility;
 import com.example.user.users.entities.UserEntity;
 import com.example.user.users.repository.UserRepository;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -48,14 +48,10 @@ public class JwtFilter extends OncePerRequestFilter {
     private UserRepository userRepository;
 
     private void validateSubjectSessionFromDb(UserDetails userDetails){
-        // TODO: Complete this method to fetch session details from DB
         UserEntity userEntity = (UserEntity) userDetails;
-        if (sessionService.isUserSessionActive(userEntity)) {
+        if (!sessionService.isUserSessionActive(userEntity)) {
             authenticationService.closeUserSession(userDetails);
-            userEntity.setIsEnabled(false);
-            userRepository.save(userEntity);
-            throw new SessionStillActiveException("Your session was active on another machine, hence your account is " +
-                    "temporarily blocked for access. Contact Admin for further actions");
+            throw new JwtException("Session Expired");
         }
     }
 
@@ -107,7 +103,7 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         authorizeViaAuthHeaders(request, response, filterChain);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth instanceof AnonymousAuthenticationToken) {
+        if (auth == null || auth instanceof AnonymousAuthenticationToken) {
             authorizeViaCookies(request, response, filterChain);
         }
         filterChain.doFilter(request, response);
