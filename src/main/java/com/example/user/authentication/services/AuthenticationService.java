@@ -3,6 +3,7 @@ package com.example.user.authentication.services;
 import com.example.user.authentication.entities.SessionEntity;
 import com.example.user.authentication.entities.TokenEntity;
 import com.example.user.authentication.repository.TokenRepository;
+import com.example.user.core.base.utils.ColorPrinter;
 import com.example.user.core.exceptions.SessionStillActiveException;
 import com.example.user.core.security.JwtAuthInterface;
 import com.example.user.groups.entities.GroupEntity;
@@ -15,6 +16,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -49,6 +51,7 @@ public class AuthenticationService implements UserDetailsService, JwtAuthInterfa
     @Value("${spring.application.jwt.access-token-lifetime}")
     private Integer ACCESS_TOKEN_LIFETIME;
 
+    @Bean
     private SecretKey getSecretKey() {
         byte[] keyBytes = SECRET_KEY.getBytes(); // based on key length the algorithm will be decided.
         return Keys.hmacShaKeyFor(keyBytes);
@@ -81,6 +84,7 @@ public class AuthenticationService implements UserDetailsService, JwtAuthInterfa
         */
         UserEntity userEntity = (UserEntity) userDetails;
         if (sessionService.isUserSessionActive(userEntity)) {
+            ColorPrinter.printColored("User Session is ACTIVE", ColorPrinter.RED);
             closeUserSession(userDetails);
             userEntity.setIsEnabled(false);
             userRepository.save(userEntity);
@@ -104,7 +108,7 @@ public class AuthenticationService implements UserDetailsService, JwtAuthInterfa
 
 
     private String createToken(Map<String, Object> claims, String username) {
-        return Jwts.builder()
+        String ret =  Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
                 .setHeader(Map.of("TYP", "JWT"))
@@ -114,6 +118,8 @@ public class AuthenticationService implements UserDetailsService, JwtAuthInterfa
                                 + (long) (ACCESS_TOKEN_LIFETIME) * 60 * 1000))
                 .signWith(getSecretKey(), SignatureAlgorithm.HS256)
                 .compact();
+        ColorPrinter.printColored(ret, ColorPrinter.GREEN);
+        return ret;
     }
 
     public String generateToken(Map<String, Object> claims, String username) {
@@ -145,6 +151,7 @@ public class AuthenticationService implements UserDetailsService, JwtAuthInterfa
                 .isPrematureTerminated(false)
                 .token(generatedToken)
                 .build();
+        ColorPrinter.printColored(tokenEntity.toString(), ColorPrinter.RED);
         tokenRepository.save(tokenEntity);
         return generatedToken;
     }

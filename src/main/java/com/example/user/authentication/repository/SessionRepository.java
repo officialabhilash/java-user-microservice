@@ -27,13 +27,13 @@ public interface SessionRepository extends JpaRepository<SessionEntity, String> 
     List<SessionEntity> getLatestSessionByUsername(@Param("username") String username, Pageable pageable);
 
     @Modifying
-    @Transactional(Transactional.TxType.MANDATORY)
+    @Transactional
     @Query("""
             UPDATE SessionEntity s
             SET
              s.sessionEndTime = :dateTime
             WHERE
-             s.user = :userId
+             s.user.id = :userId
             """)
     void closeAllUserSession(@Param("userId") Long userId, @Param("dateTime") Long dateTime);
 

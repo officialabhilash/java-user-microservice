@@ -48,6 +48,12 @@ public class SessionService {
         } else return session.getSessionEndTime() > LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
     }
 
+    public boolean isUserSessionActive(UserEntity user, SessionEntity session) {
+        if (session == null) {
+            return false;
+        } else return session.getSessionEndTime() > LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+    }
+
     public SessionEntity getLatestSessionByUsername(String username) {
         return sessionRepository.getLatestSessionByUsername(username, PageRequest.of(0, 1)).get(0);
     }

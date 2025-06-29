@@ -6,10 +6,11 @@ import lombok.*;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-@Entity
+@NoArgsConstructor
+@Table(name = "auth_tokens")
 @Builder
+@Entity
 public class TokenEntity {
 
     @Id
@@ -24,12 +25,12 @@ public class TokenEntity {
 
     private Boolean isPrematureTerminated;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private SessionEntity session;
 
     @Override
-    public String toString(){
-        return this.token + this.exp;
+    public String toString() {
+        return this.token + this.exp.toString();
     }
 
 }
