@@ -2,7 +2,6 @@ package com.example.user.authentication.controllers;
 
 import com.example.user.authentication.services.AuthenticationService;
 import com.example.user.core.base.utils.SetCookiesUtil;
-import com.example.user.core.security.JwtUtility;
 import com.example.user.users.dto.UserAuthenticationDto;
 import com.example.user.users.dto.UserDto;
 import com.example.user.users.entities.UserEntity;
@@ -30,9 +29,6 @@ public class AuthenticationController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private JwtUtility jwtUtility;
 
     @Autowired
     private Environment environment;
@@ -96,4 +92,14 @@ public class AuthenticationController {
         userService.createUser(userDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @PostMapping("logout/")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        if (request.getUserPrincipal() instanceof UserEntity) {
+            UserEntity user = (UserEntity) request.getUserPrincipal();
+            // TODO: Write logic to logout the logged in user
+        }
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
 }
