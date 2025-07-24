@@ -1,13 +1,34 @@
-FROM openjdk:23-jdk AS base
+FROM eclipse-temurin:23-jdk AS dev
 
-# Install Maven
-RUN apt-get update && \
-    apt-get install -y maven && \
-    apt-get clean
+RUN echo "User service Base"
 
+RUN apt-get update && apt-get install -y maven
 
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Copy your project files (optional)
-# ADD . /usr/src/app
+RUN java -version
 
+COPY pom.xml /app
+
+COPY src /app/src
+
+RUN mvn install -DskipTests
+
+# Production stage
+FROM eclipse-temurin:23-jdk AS prod
+
+RUN echo "User service Production"
+
+RUN apt-get update && apt-get install -y maven
+
+WORKDIR /app
+
+COPY pom.xml /app
+
+COPY src /app/src
+
+# Run tests in production build
+RUN mvn clean install
+
+# Run the application
+CMD ["mvn", "spring-boot:run"]
