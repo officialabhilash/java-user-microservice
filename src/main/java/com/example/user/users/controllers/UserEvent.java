@@ -1,24 +1,22 @@
 package com.example.user.users.controllers;
 
 import com.example.user.users.events.UserEventsEnum;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Scope;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Service;
 
-@Getter
+@Service
 public class UserEvent {
-
-    private final UserEventsEnum event;
-
-    public UserEvent(UserEventsEnum event) {
-        this.event = event;
-    }
 
     @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
-    public void sendMessage(String data) {
+    @Bean
+    @Scope(scopeName = "prototype")
+    public void sendMessage(UserEventsEnum event, String data) {
         kafkaTemplate.send(event.toString(), data);
-        System.out.println("Sent: " + event);
+        System.out.println("Sent: " + data + "\nOnTopic: " + event);
     }
 }

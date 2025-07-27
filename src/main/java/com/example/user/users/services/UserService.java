@@ -1,8 +1,10 @@
 package com.example.user.users.services;
 
+import com.example.user.users.controllers.UserEvent;
 import com.example.user.users.dto.UserDto;
 import com.example.user.users.dto.UserPermissionsDto;
 import com.example.user.users.entities.UserEntity;
+import com.example.user.users.events.UserEventsEnum;
 import com.example.user.users.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
@@ -24,12 +26,17 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Autowired
+    private final UserEvent userEvent;
+
+    @Autowired
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserService(UserRepository userRepository,
+                       UserEvent userEvent,
                        PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.userEvent = userEvent;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -58,6 +65,7 @@ public class UserService {
                 .groups(userDto.getGroups())
                 .build();
         userRepository.save(user);
+        userEvent.sendMessage(UserEventsEnum.REGISTERED, user.toString());
     }
 
     public List<UserDto> getAll() {

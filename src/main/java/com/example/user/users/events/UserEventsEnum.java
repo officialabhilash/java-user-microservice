@@ -13,6 +13,6 @@ public enum UserEventsEnum {
 
     @Override
     public String toString(){
-        return this.topic;
+        return topic;
     }
 }
